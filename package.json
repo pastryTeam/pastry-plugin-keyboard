@@ -1,0 +1,21 @@
+{
+  "name": "pastry-plugin-keyboard",
+  "version": "1.0.0",
+  "description": "pastry 插件描述",
+  "cordova": {
+    "id": "pastry-plugin-keyboard",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pastryTeam/pastry-plugin-keyboard.git"
+  },
+  "keywords": [
+    "keyboard"
+  ],
+  "author": "author",
+  "license": "MIT"
+}
