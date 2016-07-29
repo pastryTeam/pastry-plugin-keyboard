@@ -8,10 +8,7 @@
 
 #import "PTKeyboards.h"
 #import "PTBrowserContainer.h"
-#import <PT/PTSessionManager.h>
 #import "PTWindowPage.h"
-#import <PT/PTDeviceManager.h>
-#import <PT/PTKeyboardPasswordNumerPhone.h>
 
 
 #define ATTR_MASK @"mask"
