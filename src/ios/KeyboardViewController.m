@@ -25,6 +25,8 @@
 
 @implementation KeyboardViewController
 
+PT_REGISTER_COMPONENT(PTComponentType_Native, 密码键盘组件示例集合, 密码键盘, KeyboardViewController, KeyboardViewController, , )
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.

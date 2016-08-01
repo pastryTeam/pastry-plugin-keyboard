@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface KeyboardViewController : PTViewControllerBase<PTKeyboardDelegate>
+@interface KeyboardViewController : PTViewControllerBase<PTKeyboardDelegate, PTComponentInterface>
 
 - (IBAction)returnBeforePage:(id)sender;
 
