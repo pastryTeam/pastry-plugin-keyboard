@@ -29,6 +29,9 @@
     <repo>https://github.com/pastryTeam/pastry-plugin-keyboard.git</repo>
     <issue>https://github.com/pastryTeam/pastry-plugin-keyboard/issues</issue>
 
+    <hook src="hooks/after_plugin_install.js" type="after_plugin_install"/>
+    <hook src="hooks/before_plugin_uninstall.js" type="before_plugin_uninstall"/>
+    
     <!-- ios -->
     <platform name="ios">
          <config-file target="config.xml" parent="/*">
