@@ -20,8 +20,9 @@ module.exports = function(ctx) {
         // 执行模拟数据的拷贝
         var mockdataTargetPath = path.join(rootPath, 'pastry-fo-nodejs', 'wwwroot', 'mockdata');
         // console.log('mockdataTargetPath = ' + mockdataTargetPath);
-
-        tools.copy(mockdataSourcePath, mockdataTargetPath);
+        if (fs.existsSync(mockdataTargetPath)) {
+            tools.copy(mockdataSourcePath, mockdataTargetPath);
+        }
     } 
 
     return;
