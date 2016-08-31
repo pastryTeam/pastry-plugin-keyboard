@@ -7,16 +7,48 @@
 //
 
 #import "PTKeyboards.h"
+
+#ifdef IONIC_PLATFORM
+
+#else
+
 #import "PTBrowserContainer.h"
 #import "PTWindowPage.h"
 
+#endif
 
+/**
+ * 标记是否显示明文 <br>
+ * mask = 1 : 显示密文 <br/>
+ * mask = 0 : 显示明文 <br/>
+ */
 #define ATTR_MASK @"mask"
-#define ATTR_MAX_LENGTH @"maxLength"
-#define ATTR_KEYBOARD_TYPE @"keyboardType"
-#define ATTR_RANDOM_SORT @"randomSort"
-#define ATTR_RANDOM_SORT2 @"random"
 
+/**
+ * 标记密码支持的长度 <br/>
+ * maxLength = 8 : 最长支持8位密码
+ */
+#define ATTR_MAX_LENGTH @"maxLength"
+
+/**
+ * 键盘类型
+ * keyboardType = 2 : 数字键盘
+ * keyboardType = 其它 : 字符键盘
+ */
+#define ATTR_KEYBOARD_TYPE @"keyboardType"
+
+/**
+ * 标记是否支持键盘乱序
+ * randomSort = 1 : 支持键盘乱序
+ * randomSort = 0 : 不支持键盘乱序
+ */
+#define ATTR_RANDOM_SORT @"randomSort"
+
+/**
+ * 是否支持加密
+ * encryptor = 1 : 支持加密
+ * encryptor = 0 : 不支持加密
+ */
 #define ATTR_ENCRYPTOR @"encryptor"
 
 typedef enum {
@@ -24,97 +56,66 @@ typedef enum {
     OPTYPE_INPUT = 1,
     OPTYPE_DELETE = 2,
     OPTYPE_SUBMIT = 3,
-}OPTYPE;
+} OPTYPE;
 
 
 @implementation PTKeyboards{
     PTKeyboard *_keyboard;
-    
-    UITapGestureRecognizer *_singleTap;
-    
+}
+
+- (void)jsShowKeyboards:(CDVInvokedUrlCommand*)command {
+    id data = [[command.arguments objectAtIndex:0] objectForKey:@"data"];
+    BOOL result = [self openKeyboard:data];
+    // 返回 js 的回调，js 端 注册 keyboard.input keyboard.delete keyboard.submit 事件；
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[NSString stringWithFormat:@"%@", [NSNumber numberWithBool:result]]];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void)jsHideKeyboards:(CDVInvokedUrlCommand *)command{
-    NSMutableDictionary *responseMsg = [NSMutableDictionary dictionary];
-    
-    [responseMsg setObject:[NSNumber numberWithInteger:0] forKey:@"result"];
-    [responseMsg setObject:[NSNumber numberWithBool:false] forKey:@"continue"];
-//    [self closeKeyBoard];
-    [self sendAction:OPTYPE_SUBMIT text:nil plainText:nil passwordStrength:nil];
+    [self closeKeyBoard];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"YES"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void)jsShowKeyboards:(CDVInvokedUrlCommand*)command
-{
-    id data = [[command.arguments objectAtIndex:0] objectForKey:@"data"];
-
-    NSMutableDictionary *responseMsg = [NSMutableDictionary dictionary];
-    
-    [responseMsg setObject:[NSNumber numberWithInteger:0] forKey:@"result"];
-    [responseMsg setObject:[NSNumber numberWithBool:true] forKey:@"continue"];
-    
-    BOOL correctOpt = [self callSecurityKeyboardWithRequest:data];
-    if (correctOpt) {
-        PTLogDebug(@"密码键盘已经存在");
-        
-        
-    } else {
-        PTLogDebug(@"密码键盘不存在");
-        
-        // 返回 js 的回调，js 端 注册 keyboard.input keyboard.delete keyboard.submit 事件；
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"test"];
-        
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        
-    }
-    
-}
-
+#pragma mark - 打开、关闭密码键盘
 /**
- * 根据js请求参数，开始调用对应类型密码键盘
- * 数字键盘
- * 字母键盘
- * @return YES : 键盘已经存在；
- *          NO : 键盘不存在，但是初始化好一个键盘
+ * 打开密码键盘<br/>
+ * 根据js请求参数，开始调用对应类型密码键盘<br/>
+ * 数字键盘<br/>
+ * 字母键盘<br/>
+ * @return YES : 键盘已经存在；<br/>
+ *          NO : 键盘不存在，但是初始化好一个键盘<br/>
  */
--(BOOL)callSecurityKeyboardWithRequest:(id)requestData
+-(BOOL)openKeyboard:(id)keyboardParam
 {
-    if ([self keyboardHasBeenShown]) {
-        return YES;
-    }
-    else if (_keyboard==nil){
+    if ([self isHasKeyboard]) {
+        return NO;
+    } else {
         BOOL isShowText = NO;
         BOOL isRandomSort = NO;
-        BOOL random2 = NO;
         BOOL needEncryptor = true;
         int  length = 0;
         int  keyboardType = PTKeyboardTypeDefault;
         
-        if (requestData != nil) {
-            if ([requestData objectForKey:ATTR_MASK] != nil && [requestData objectForKey:ATTR_MASK] != [NSNull null]) {
-                isShowText = ![[requestData objectForKey:ATTR_MASK] boolValue];
+        if (keyboardParam != nil) {
+            if ([keyboardParam objectForKey:ATTR_MASK] != nil && [keyboardParam objectForKey:ATTR_MASK] != [NSNull null]) {
+                isShowText = ![[keyboardParam objectForKey:ATTR_MASK] boolValue];
             }
-            if ([requestData objectForKey:ATTR_MAX_LENGTH] != nil && [requestData objectForKey:ATTR_MAX_LENGTH] != [NSNull null]) {
-                length = [[requestData objectForKey:ATTR_MAX_LENGTH] intValue];
+            if ([keyboardParam objectForKey:ATTR_MAX_LENGTH] != nil && [keyboardParam objectForKey:ATTR_MAX_LENGTH] != [NSNull null]) {
+                length = [[keyboardParam objectForKey:ATTR_MAX_LENGTH] intValue];
             }
-            if ([requestData objectForKey:ATTR_KEYBOARD_TYPE] != nil && [requestData objectForKey:ATTR_KEYBOARD_TYPE] != [NSNull null]) {
-                keyboardType = [[requestData objectForKey:ATTR_KEYBOARD_TYPE] intValue];
+            if ([keyboardParam objectForKey:ATTR_KEYBOARD_TYPE] != nil && [keyboardParam objectForKey:ATTR_KEYBOARD_TYPE] != [NSNull null]) {
+                keyboardType = [[keyboardParam objectForKey:ATTR_KEYBOARD_TYPE] intValue];
             }
-            if ([requestData objectForKey:ATTR_RANDOM_SORT] != nil && [requestData objectForKey:ATTR_RANDOM_SORT] != [NSNull null]) {
-                isRandomSort = [[requestData objectForKey:ATTR_RANDOM_SORT] boolValue];
+            if ([keyboardParam objectForKey:ATTR_RANDOM_SORT] != nil && [keyboardParam objectForKey:ATTR_RANDOM_SORT] != [NSNull null]) {
+                isRandomSort = [[keyboardParam objectForKey:ATTR_RANDOM_SORT] boolValue];
             }
-            
-            if ([requestData objectForKey:ATTR_RANDOM_SORT2] != nil && [requestData objectForKey:ATTR_RANDOM_SORT2] != [NSNull null]) {
-                random2 = [[requestData objectForKey:ATTR_RANDOM_SORT2] boolValue];
+            if ([keyboardParam objectForKey:ATTR_ENCRYPTOR] != nil && [keyboardParam objectForKey:ATTR_ENCRYPTOR] != [NSNull null]) {
+                needEncryptor = [[keyboardParam objectForKey:ATTR_ENCRYPTOR] boolValue];
             }
-            if ([requestData objectForKey:ATTR_ENCRYPTOR] != nil && [requestData objectForKey:ATTR_ENCRYPTOR] != [NSNull null]) {
-                needEncryptor = [[requestData objectForKey:ATTR_ENCRYPTOR] boolValue];
-            }
-            
-            isRandomSort = (random2 ||isRandomSort);
         }
         
         // 获取随机属性，之前是一个协议方法，由业务端提供
-        //NSNumber *localRandom = [jsWebView didGetLocalRandomValueOfKeyboard];
         BOOL keywordStatus = [[NSUserDefaults standardUserDefaults] boolForKey:@"keywordOrderSet"];
         NSNumber *localRandom = [NSNumber numberWithBool:keywordStatus];
         
@@ -147,56 +148,68 @@ typedef enum {
         _keyboard.needEncrypt = needEncryptor;
         _keyboard.keyDelegate = self;
         
-        [self didShowPasswordKeyboard:_keyboard browserContainer:[self getBrowserContainer]];
+#ifdef IONIC_PLATFORM
+        [self didShowKeyboard:_keyboard toTargetView:[self getTargetView]];
+#else
+        [self didShowKeyboard:_keyboard browserContainer:[self getBrowserContainer]];
+#endif
+        return YES;
+    }
+}
+
+/**
+ * 关闭密码键盘，并清空数据
+ */
+- (void)closeKeyBoard {
+    
+    if ([self isHasKeyboard]) {
+        [self didHideKeyboard:_keyboard];
+    }
+    
+    if (_keyboard!=nil) {
+        _keyboard.keyDelegate = nil;
+        _keyboard = nil;
+    }
+}
+
+#pragma mark - 密码键盘显示、隐藏动画效果
+
+#ifdef IONIC_PLATFORM
+
+/**
+ * 将密码键盘添加到父View，并执行展示动画效果
+ * @param   keyboard        待操作的密码键盘
+ * @param   targetView      密码键盘的父View
+ */
+- (void)didShowKeyboard:(PTKeyboard *)keyboard toTargetView:(UIView *)targetView {
+    PTLogDebug(@"H5 调用原生密码键盘 didShowKeyboard ");
+    
+    CGRect currentRect = targetView.frame;
+    keyboard.frame = CGRectMake(0.f, currentRect.size.height, keyboard.frame.size.width, keyboard.frame.size.height);
+    [[targetView superview] addSubview:keyboard];
+    
+    [UIView animateWithDuration:.3f animations:^ {
+        // 设置密码键盘的 frame
+        keyboard.frame = CGRectMake(0.f, currentRect.size.height - keyboard.frame.size.height, keyboard.frame.size.width, keyboard.frame.size.height);
+    } completion:^ (BOOL finish) {
         
-        return NO;
-    }
-    else{
-        return NO;
-    }
+    }];
 }
+
+#else
 
 /**
- * 通过webview对象，获取当前的插件的BrowserContainer；
+ * 将密码键盘添加到父View，并执行展示动画效果
+ * @param   keyboard        待操作的密码键盘
+ * @param   targetView      密码键盘的父View
  */
-- (id)getBrowserContainer{
-    PTBrowserContainer *browserContainer = nil;
-    for (UIView *next = self.webView; next; next = next.superview) {
-        UIResponder *nextResponder = [next nextResponder];
-        if ([nextResponder class] == [PTBrowserContainer class]) {
-            browserContainer = (PTBrowserContainer *)nextResponder;
-            break;
-        }
-    }
-    
-    return browserContainer;
-}
-
-- (id)getBrowserContainerParentViewController:(UIViewController *)browserContainer{
-    UIViewController *parentViewController = nil;
-    for (UIView *next = browserContainer.view; next; next = next.superview) {
-        UIResponder *nextResponder = [next nextResponder];
-        if ([[nextResponder class] isSubclassOfClass:[UIViewController class]] && [nextResponder respondsToSelector:@selector(passwordStrength:encryptData:)]) {
-            parentViewController = (UIViewController *)nextResponder;
-            break;
-        }
-    }
-    
-    return parentViewController;
-}
-
-/**
- * 显示密码键盘到UI，并实现动画效果
- */
-- (void)didShowPasswordKeyboard:(PTKeyboard *)keyboard browserContainer:(PTBrowserContainer *)browserContainer
+- (void)didShowKeyboard:(PTKeyboard *)keyboard browserContainer:(PTBrowserContainer *)browserContainer
 {
-    PTLogDebug(@"didShowPasswordKeyboard");
+    PTLogDebug(@"didShowKeyboard");
     
     CGRect currentRect = [browserContainer getOriginFrame];
     [keyboard setFrame:CGRectMake(0.f, currentRect.size.height, keyboard.frame.size.width, keyboard.frame.size.height)];
     [[browserContainer.view superview] addSubview:keyboard];
-    
-//    [self addTapGestureRecognizer:browserContainer];
     
     [UIView animateWithDuration:.3f animations:^ {
         // 设置密码键盘的 frame
@@ -212,9 +225,27 @@ typedef enum {
         PTLogDebug(@"did change jswebview frame to %@",NSStringFromCGRect(browserContainer.view.frame));
     }];
 }
+#endif
 
-- (void)didHidePasswordKeyboard:(PTKeyboard *)keyboard taskID:(NSString *)taskID
-{
+#ifdef IONIC_PLATFORM
+/**
+ * 将密码键盘从父View上移除，并执行关闭动画效果
+ * @param   keyboard        待操作的密码键盘
+ */
+- (void)didHideKeyboard:(PTKeyboard *)keyboard {
+    [UIView animateWithDuration:.3f animations:^ {
+        CGFloat y = keyboard.frame.origin.y + keyboard.frame.size.height;
+        keyboard.frame = CGRectMake(keyboard.frame.origin.x, y, keyboard.frame.size.width, keyboard.frame.size.height);
+    } completion:^ (BOOL finish) {
+        [keyboard removeFromSuperview];
+    }];
+}
+#else
+/**
+ * 将密码键盘从父View上移除，并执行关闭动画效果
+ * @param   keyboard        待操作的密码键盘
+ */
+- (void)didHideKeyboard:(PTKeyboard *)keyboard {
     [UIView animateWithDuration:.3f animations:^ {
         CGFloat y = keyboard.frame.origin.y + keyboard.frame.size.height;
         keyboard.frame = CGRectMake(keyboard.frame.origin.x, y, keyboard.frame.size.width, keyboard.frame.size.height);
@@ -230,20 +261,62 @@ typedef enum {
         [keyboard removeFromSuperview];
     }];
 }
+#endif
 
-//判断键盘是否已经显示
--(BOOL)keyboardHasBeenShown
+#pragma mark - 获取密码键盘的父容器
+/**
+ * 获取 密码键盘将要显示到的父View
+ * @return 父View
+ */
+- (UIView *)getTargetView {
+    
+    UIViewController *result = nil;
+    
+    UIWindow * window = [[UIApplication sharedApplication] keyWindow];
+    if (window.windowLevel != UIWindowLevelNormal)
+    {
+        NSArray *windows = [[UIApplication sharedApplication] windows];
+        for(UIWindow * tmpWin in windows)
+        {
+            if (tmpWin.windowLevel == UIWindowLevelNormal)
+            {
+                window = tmpWin;
+                break;
+            }
+        }
+    }
+    
+    UIView *frontView = [[window subviews] objectAtIndex:0];
+    id nextResponder = [frontView nextResponder];
+    
+    if ([nextResponder isKindOfClass:[UIViewController class]])
+        result = nextResponder;
+    else
+        result = window.rootViewController;
+    
+    return result.view;
+}
+
+#pragma mark - 判断密码键盘是否显示
+/**
+ * 获取密码键盘是否已经显示
+ * @return  
+ *      YES : 已经显示密码键盘<br/>
+ *      NO : 没有显示的密码键盘<br/>
+ */
+-(BOOL)isHasKeyboard
 {
     BOOL showKeyboard = NO;
     if (_keyboard != nil && _keyboard.superview != nil) {
-        return YES;
         showKeyboard = YES;
     }
     PTLogDebug(@"keyboard has been %d",showKeyboard);
     return showKeyboard;
 }
 
-#pragma mark -- KeyboardDelegate
+
+#pragma mark - 密码键盘代理 KeyboardDelegate
+
 - (void)didKeyPressed:(PTKeyboard *)keyboard encryptData:(NSMutableData *)encryptData plainText:(NSString *)plainText keyStat:(NSDictionary *)keyStat
 {
     PTLogDebug(@"security keyboard plain text = %@",plainText);
@@ -307,6 +380,9 @@ typedef enum {
     //            strength = [NSNumber numberWithInt:strengthValue];
     //        }
     
+#ifdef IONIC_PLATFORM
+    
+#else
     PTBrowserContainer *browserContainer = [self getBrowserContainer];
     
     UIViewController *parentVC = [self getBrowserContainerParentViewController:browserContainer];
@@ -314,20 +390,9 @@ typedef enum {
         int strengthValue = [parentVC performSelector:@selector(passwordStrength:encryptData:) withObject:keyStat withObject:data];
         strength = [NSNumber numberWithInt:strengthValue];
     }
+#endif
     
     return strength;
-}
-
-- (void)closeKeyBoard
-{
-    if ([self keyboardHasBeenShown]) {
-        [self didHidePasswordKeyboard:_keyboard taskID:nil];
-    }
-    
-    if (_keyboard!=nil) {
-        _keyboard.keyDelegate = nil;
-        _keyboard = nil;
-    }
 }
 
 - (void)sendKeyboardAction:(OPTYPE)type password:(NSString *)password plainText:(NSString *)plainText passwordStrength:(NSNumber *)strength
@@ -342,20 +407,29 @@ typedef enum {
 
 -(void)sendAction:(OPTYPE)type text:(NSString*)text plainText:(NSString *)plainText passwordStrength:(NSNumber *)strength
 {
-    PTLogDebug(@"sendAction type = %d,text= %@,plainText= %@,strength=%@",type,text,plainText,strength);
+    PTLogDebug(@"sendAction type = %d,text= %@,plainText= %@,strength=%@", type, text, plainText, strength);
     NSMutableDictionary *dataDictionary = [NSMutableDictionary dictionary];
-    [dataDictionary setObject:[NSNumber numberWithInteger:type] forKey:@"optype"];
     
-    if (plainText != nil && plainText.length > 0) {
-        [dataDictionary setObject:plainText forKey:@"value"];
+    if (text != nil && text.length > 0) {
+        [dataDictionary setObject:text forKey:@"value"];
         if (strength != nil) {
             [dataDictionary setObject:strength forKey:@"strength"];
         }
     } else {
         [dataDictionary setObject:@"" forKey:@"value"];
     }
+    
     if (plainText != nil && plainText.length > 0) {
-        [dataDictionary setObject:plainText forKey:@"text"];
+        [dataDictionary setObject:plainText forKey:@"plainText"];
+        
+        NSString *maskText = @"";
+        for (int index = 0; index < plainText.length; index++) {
+            maskText = [NSString stringWithFormat:@"%@*", maskText];
+        }
+        [dataDictionary setObject:maskText forKey:@"maskText"];
+		
+        // 兼容 pastry 平台
+        [dataDictionary setObject:maskText forKey:@"text"];
     }
     
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
@@ -372,47 +446,88 @@ typedef enum {
             [dictionary setObject:[NSNumber numberWithBool:true] forKey:@"continue"];
             break;
     }
-    PTBrowserContainer *browserContainer = [self getBrowserContainer];
     
-    if (browserContainer != nil) {
-        PTWindowPage *windowPage = [browserContainer getCurrentWindowPage];
+    if ([dictionary isKindOfClass:[NSDictionary class]]) {
         
-        if ([dictionary isKindOfClass:[NSDictionary class]]) {
+        NSString *strParam = @"";
+        for (NSString *key in dictionary) {
             
-            NSString *strParam = @"";
-            for (NSString *key in dictionary) {
+            if ([key isEqualToString:@"data"]) {
                 
-                if ([key  isEqualToString: @"data"]) {
-                    
-                    if ([dictionary[key] isKindOfClass:[NSDictionary class]]) {
-                        strParam = [dictionary[key] JSONString];
-                    }
+                if ([dictionary[key] isKindOfClass:[NSDictionary class]]) {
+                    strParam = [dictionary[key] JSONString];
                 }
             }
-            
-            NSString *js = nil;
-            switch (type) {
-                case OPTYPE_SUBMIT:
-                    js = [NSString stringWithFormat:@"cordova.fireDocumentEvent('keyboard.submit',%@);",strParam];
-                    break;
-                    
-                case OPTYPE_DELETE:
-                    js = [NSString stringWithFormat:@"cordova.fireDocumentEvent('keyboard.delete',%@);",strParam];
-                    break;
-                    
-                case OPTYPE_INPUT:
-                default:
-                    js = [NSString stringWithFormat:@"cordova.fireDocumentEvent('keyboard.input',%@);",strParam];
-                    break;
-            }
+        }
+        
+        NSString *js = nil;
+        switch (type) {
+            case OPTYPE_SUBMIT:
+                js = [NSString stringWithFormat:@"cordova.fireDocumentEvent('keyboard.submit',%@);",strParam];
+                break;
+                
+            case OPTYPE_DELETE:
+                js = [NSString stringWithFormat:@"cordova.fireDocumentEvent('keyboard.delete',%@);",strParam];
+                break;
+                
+            case OPTYPE_INPUT:
+            default:
+                js = [NSString stringWithFormat:@"cordova.fireDocumentEvent('keyboard.input',%@);",strParam];
+                break;
+        }
+        
+#ifdef IONIC_PLATFORM
+        [self.commandDelegate evalJs:js];
+#else
+        PTBrowserContainer *browserContainer = [self getBrowserContainer];
+        if (browserContainer != nil) {
+            PTWindowPage *windowPage = [browserContainer getCurrentWindowPage];
             [windowPage.commandDelegate evalJs:js];
         }
+#endif
     }
 }
-    
-    
+
+
+#pragma mark - 兼容pastry平台
+
+#ifdef IONIC_PLATFORM
+
+#else
+
 -(void)tapViewToCloseTheKeyboard
 {
     [self sendAction:OPTYPE_SUBMIT text:nil plainText:nil passwordStrength:nil];
 }
+
+/**
+ * 通过webview对象，获取当前的插件的BrowserContainer；
+ */
+- (id)getBrowserContainer{
+    PTBrowserContainer *browserContainer = nil;
+    for (UIView *next = self.webView; next; next = next.superview) {
+        UIResponder *nextResponder = [next nextResponder];
+        if ([nextResponder class] == [PTBrowserContainer class]) {
+            browserContainer = (PTBrowserContainer *)nextResponder;
+            break;
+        }
+    }
+    
+    return browserContainer;
+}
+
+- (id)getBrowserContainerParentViewController:(UIViewController *)browserContainer{
+    UIViewController *parentViewController = nil;
+    for (UIView *next = browserContainer.view; next; next = next.superview) {
+        UIResponder *nextResponder = [next nextResponder];
+        if ([[nextResponder class] isSubclassOfClass:[UIViewController class]] && [nextResponder respondsToSelector:@selector(passwordStrength:encryptData:)]) {
+            parentViewController = (UIViewController *)nextResponder;
+            break;
+        }
+    }
+    
+    return parentViewController;
+}
+#endif
+
 @end

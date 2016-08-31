@@ -22,8 +22,19 @@
 # 功能介绍
 JS 端调用原生端的密码键盘
 
-
 # 安装方法
+
+* ionic 平台
+
+        ionic plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
+
+        需要在原生端定义 #define IONIC_PLATFORM 1
+    
+* pastry 平台
+    
+        pastry bake plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
+    
+        不需要在原生端定义 IONIC_PLATFORM
 
 # 使用方法
 
