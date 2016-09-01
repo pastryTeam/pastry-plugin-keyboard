@@ -22,6 +22,41 @@
 # 功能介绍
 JS 端调用原生端的密码键盘
 
+## 请求参数
+            jsShowKeyboards方法设置参数格式：
+            
+            param = [{'data':{
+                'mask':'0',         // 支持明文显示
+                'maxLength':'12',   // 密码最大长度:12
+                'keyboardType':'2', // 密码键盘类型:数字键盘
+                'randomSort':'1',   // 支持密码键盘乱序
+                'encryptor':'1'     // 支持加密
+            }}];
+            
+            jsHideKeyboards方法设置参数格式：
+            
+            param = ['null'];
+            
+## 返回参数
+            input、delete、submit 方法返回参数格式：
+            
+            data = {
+                'maskText':'0',     // 接收掩码 例如：****
+                'plainText':'12',   // 接收明文 例如：1234
+                'value':'2',        // 接收密文 例如：EADFD77978FDFS
+                // 此字段为了兼容 pastry 平台
+                'text':'1'          // 支持密码键盘乱序
+            }
+            
+            返回参数使用方法：
+            
+            // 接收掩码 例如：****
+            maskText = data.maskText;
+            // 接收明文 例如：1234
+            plainText = data.plainText;
+            // 接收密文 例如：EADFD77978FDFS
+            value = data.value;
+            
 # 安装方法
 
 * ionic 平台
