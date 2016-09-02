@@ -46,6 +46,8 @@
          <source-file src="src/ios/KeyboardViewController.m" />
          <source-file src="src/ios/KeyboardViewController.xib" />
 
+         <resource-file src="src/ios/PTResources.bundle" />
+
         <!-- 添加图片资源的示例 -->
         <!--<resource-file src="src/ios/icon.png" />-->
         <!--<resource-file src="src/ios/CDVCapture.bundle" />-->
