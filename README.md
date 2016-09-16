@@ -1,5 +1,5 @@
 # 支持平台
-
+>
 |平台 | 是否支持 |
 |-----|------|
 |JS    | 支持    |
@@ -7,20 +7,24 @@
 |android    | 支持    |
 
 # 依赖服务器数据
-
+>
 |平台 | 是否依赖 |
 |-----|------|
 |FO-Java    | 依赖    |
 |FO-NodeJS    | 依赖    |
 
 # 组件依赖关系
-
+>
 |组件 | 版本号 | 地址|
 |-----|------|----|
 |示例    | 版本号    | [GitHub地址](#)|
 
 # 功能介绍
-JS 端调用原生端的密码键盘
+>
+* 必选功能
+    * JS 端调用原生端的密码键盘
+* 可选功能
+  * 无
 
 ## 请求参数
             jsShowKeyboards方法设置参数格式：
@@ -58,21 +62,46 @@ JS 端调用原生端的密码键盘
             value = data.value;
             
 # 安装方法
-
+>
 * ionic 平台
 
-        ionic plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
+    # 安装指定 tag 版本,例如 版本号 = 0.1.0
+    ionic plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git#0.1.0 
+    
+    # 安装最新代码
+    ionic plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
 
-        需要在原生端定义 #define IONIC_PLATFORM 1
+    需要在原生端定义 #define IONIC_PLATFORM 1 
+
+>
+* pastry本地包安装
+        
+    pastry bake plugin add pastry-plugin-keyboard
+>
+* github在线安装
+
+    # 安装指定 tag 版本,例如 版本号 = 0.1.0
+    pastry bake plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git#0.1.0 
     
-* pastry 平台
+    # 安装最新代码
+    pastry bake plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
     
-        pastry bake plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
+    不需要在原生端定义 IONIC_PLATFORM
+
+# 插件安装到项目里的目录结构
+>
+涉及两种目录
+
+* 代码目录
+        
+    项目名称/platforms/ios/项目名称/Plugins/pastry-plugin-keyboard
     
-        不需要在原生端定义 IONIC_PLATFORM
+* 资源目录 `特例`
+
+    项目名称/platforms/ios/项目名称/Resources/PTResources.bundle
 
 # 使用方法
-
+>
 JS 端UI设计
 
 * AngularJS
@@ -83,6 +112,7 @@ JS 端UI设计
 
     待定
 
+>
 JS 端调用方法
 
 * 打开键盘
@@ -156,8 +186,18 @@ JS 端调用方法
             value = data.value;
             console.log('onPasswordSubmit');
         };
-        
-# 作者
 
+>
+* 如需修改页面显示效果
+        
+    自行修改 代码目录
+
+> 
+* 如需修改插件资源
+        
+    自定修改 资源目录
+         
+# 作者
+>
 pastryTeam 团队
 
