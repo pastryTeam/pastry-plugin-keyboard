@@ -8,6 +8,7 @@
 
 //#import <Cordova/Cordova.h>
 #import <Cordova/CDV.h>
+#import "PTKeyboardDelegate.h"
 
 /**
  * 接收 JS 端发送的网络请求，加密后转发给服务器；然后将服务器返回的结果发送给 JS 端；<br/>

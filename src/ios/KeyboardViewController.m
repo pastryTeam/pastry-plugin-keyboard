@@ -7,13 +7,15 @@
 //
 
 #import "KeyboardViewController.h"
+#import "PTKeyboardiPhone.h"
+#import "PTKeyboardPasswordNumerPhone.h"
 
 @interface KeyboardViewController (){
     PTKeyboard *_pwdKeyboard;
     
     PTKeyboard *_pwdNumKeyboard;
     
-    PTSessionManager *_sessionManager;
+    PTSecretKeyManager *_keyManager;
     
     // 字符键盘的密码数据
     NSData *_encryptPassword_Char;
@@ -34,12 +36,12 @@ PT_REGISTER_COMPONENT(PTComponentType_Native, 密码键盘组件示例集合, �
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(closeKeyboard)];
     [self.view addGestureRecognizer:tapGesture];
     
-    _pwdKeyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:YES isRandomSort:YES length:10 key1:[_sessionManager getEncryptServerRandomKey] key2:[_sessionManager getClientRandomKey] key3:[_sessionManager getSessionKey]];
+    _pwdKeyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:YES isRandomSort:YES length:10 key1:[_keyManager getServerRandomKey] key2:[_keyManager getClientRandomKey] key3:[_keyManager getSessionKey]];
     _pwdKeyboard.keyDelegate = self;
     
     _passwordTF.inputView = _pwdKeyboard;
     
-    _pwdNumKeyboard = [[PTKeyboardPasswordNumerPhone alloc] initWithResponder:YES isShowText:YES isRandomSort:YES length:10 key1:[_sessionManager getEncryptServerRandomKey] key2:[_sessionManager getClientRandomKey] key3:[_sessionManager getSessionKey]];
+    _pwdNumKeyboard = [[PTKeyboardPasswordNumerPhone alloc] initWithResponder:YES isShowText:YES isRandomSort:YES length:10 key1:[_keyManager getServerRandomKey] key2:[_keyManager getClientRandomKey] key3:[_keyManager getSessionKey]];
     _pwdNumKeyboard.keyDelegate = self;
     
     _passwork_NumTF.inputView = _pwdNumKeyboard;

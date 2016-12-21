@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PTKeyboardDelegate.h"
 
 @interface KeyboardViewController : PTViewControllerBase<PTKeyboardDelegate, PTComponentInterface>
 
