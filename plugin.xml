@@ -46,6 +46,38 @@
         <source-file src="src/ios/KeyboardViewController.m" />
         <source-file src="src/ios/KeyboardViewController.xib" />
 
+
+        <header-file src="src/ios/keyboard/PTKeyboardDelegate.h" target-dir="keyboard" />
+        
+        <header-file src="src/ios/keyboard/PTKeyboard.h" target-dir="keyboard" />
+        <source-file src="src/ios/keyboard/PTKeyboard.m" target-dir="keyboard" />
+        <header-file src="src/ios/keyboard/PTKeyboardiPad.h" target-dir="keyboard" />
+        <source-file src="src/ios/keyboard/PTKeyboardiPad.m" target-dir="keyboard" />
+        <header-file src="src/ios/keyboard/PTKeyboardiPhone.h" target-dir="keyboard" />
+        <source-file src="src/ios/keyboard/PTKeyboardiPhone.m" target-dir="keyboard" />
+        <header-file src="src/ios/keyboard/PTKeyboardPasswordNumerPhone.h" target-dir="keyboard" />
+        <source-file src="src/ios/keyboard/PTKeyboardPasswordNumerPhone.m" target-dir="keyboard" />
+        <header-file src="src/ios/keyboard/UIDevice+Hardware.h" target-dir="keyboard" />
+        <source-file src="src/ios/keyboard/UIDevice+Hardware.m" target-dir="keyboard" />
+
+        <header-file src="src/ios/keyboard/key/PTKeyboardHybridkey.h" target-dir="keyboard/key" />
+        <source-file src="src/ios/keyboard/key/PTKeyboardHybridkey.m" target-dir="keyboard/key" />
+        <header-file src="src/ios/keyboard/key/PTKeyboardHybridShiftKey.h" target-dir="keyboard/key" />
+        <source-file src="src/ios/keyboard/key/PTKeyboardHybridShiftKey.m" target-dir="keyboard/key" />
+        <header-file src="src/ios/keyboard/key/PTKeyboardKey.h" target-dir="keyboard/key" />
+        <source-file src="src/ios/keyboard/key/PTKeyboardKey.m" target-dir="keyboard/key" />
+        <header-file src="src/ios/keyboard/key/PTKeyboardPublickey.h" target-dir="keyboard/key" />
+        <source-file src="src/ios/keyboard/key/PTKeyboardPublickey.m" target-dir="keyboard/key" />
+        <header-file src="src/ios/keyboard/key/PTKeyViewLayer.h" target-dir="keyboard/key" />
+        <source-file src="src/ios/keyboard/key/PTKeyViewLayer.m" target-dir="keyboard/key" />
+
+        <header-file src="src/ios/keyboard/metrics/Linear.h" target-dir="keyboard/metrics" />
+        <header-file src="src/ios/keyboard/metrics/Metrics.h" target-dir="keyboard/metrics" />
+        <header-file src="src/ios/keyboard/metrics/PTKeyboardConstant.h" target-dir="keyboard/metrics" />
+        <header-file src="src/ios/keyboard/metrics/PhoneKeyboardMetrics.h" target-dir="keyboard/metrics" />
+        <source-file src="src/ios/keyboard/metrics/PhoneKeyboardMetrics.m" target-dir="keyboard/metrics" />
+
+
         <!-- 添加图片资源的示例 -->
         <resource-file src="src/ios/PTResources.bundle" />
         <!--<resource-file src="src/ios/icon.png" />-->
