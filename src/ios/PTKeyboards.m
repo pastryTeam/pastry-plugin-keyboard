@@ -132,7 +132,7 @@ typedef enum {
             case 2:
             {
                 //数字键盘
-                _keyboard = [[PTKeyboardPasswordNumerPhone alloc] initWithResponder:YES isShowText:isShowText isRandomSort: isRandomSort length:length key1:[manager getServerRandomKey] key2:[manager getClientRandomKey] key3:[manager getSessionKey]];
+                _keyboard = [[PTKeyboardPasswordNumerPhone alloc] initWithResponder:YES isShowText:isShowText randomType:keyboardType length:length key1:[manager getServerRandomKey] key2:[manager getClientRandomKey] key3:[manager getSessionKey]];
             }
                 break;
             default:
@@ -140,9 +140,9 @@ typedef enum {
                 //字符键盘
                 NSString *deviceType = [[PTDeviceManager getInstance] getIncaseDeviceType];
                 if ([deviceType isEqualToString:@"ipad"]){
-                    _keyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:isShowText isRandomSort:isRandomSort length:length key1:[manager getServerRandomKey] key2:[manager getClientRandomKey] key3:[manager getSessionKey]];
+                    _keyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:isShowText randomType:keyboardType length:length key1:[manager getServerRandomKey] key2:[manager getClientRandomKey] key3:[manager getSessionKey]];
                 } else {
-                    _keyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:isShowText isRandomSort:isRandomSort length:length key1:[manager getServerRandomKey] key2:[manager getClientRandomKey] key3:[manager getSessionKey]];
+                    _keyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:isShowText randomType:keyboardType length:length key1:[manager getServerRandomKey] key2:[manager getClientRandomKey] key3:[manager getSessionKey]];
                 }
             }
                 break;

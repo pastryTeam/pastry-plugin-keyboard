@@ -40,12 +40,12 @@ PT_REGISTER_COMPONENT(PTComponentType_Native, 密码键盘组件示例集合, �
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(closeKeyboard)];
     [self.view addGestureRecognizer:tapGesture];
     
-    _pwdKeyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:YES isRandomSort:YES length:10 key1:[_keyManager getServerRandomKey] key2:[_keyManager getClientRandomKey] key3:[_keyManager getSessionKey]];
+    _pwdKeyboard = [[PTKeyboardiPhone alloc] initWithResponder:YES isShowText:YES randomType:PTKeyboardRandomTypePunctuation length:10 key1:[_keyManager getServerRandomKey] key2:[_keyManager getClientRandomKey] key3:[_keyManager getSessionKey]];
     _pwdKeyboard.keyDelegate = self;
     
     _passwordTF.inputView = _pwdKeyboard;
     
-    _pwdNumKeyboard = [[PTKeyboardPasswordNumerPhone alloc] initWithResponder:YES isShowText:YES isRandomSort:YES length:10 key1:[_keyManager getServerRandomKey] key2:[_keyManager getClientRandomKey] key3:[_keyManager getSessionKey]];
+    _pwdNumKeyboard = [[PTKeyboardPasswordNumerPhone alloc] initWithResponder:YES isShowText:YES randomType:PTKeyboardRandomTypePunctuation length:10 key1:[_keyManager getServerRandomKey] key2:[_keyManager getClientRandomKey] key3:[_keyManager getSessionKey]];
     _pwdNumKeyboard.keyDelegate = self;
     
     _passwork_NumTF.inputView = _pwdNumKeyboard;
