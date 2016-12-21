@@ -15,28 +15,6 @@
 @synthesize encryptStrData = _encryptStrData;
 @synthesize textData = _textData;
 
-//- (void)dealloc
-//{
-//    _keyDelegate = nil;
-//    _encryptStrData = nil;
-//    _textData = nil;
-//    [super dealloc];
-//}
-
-//+ (id)getKeyboardInstanceWithResponder:(BOOL)enable isShowText:(BOOL)isShowText isRandomSort:(BOOL)randomSort length:(NSInteger)length key1:(NSString *)key1 key2:(NSString *)key2 key3:(NSString *)key3
-//{
-//    return nil;
-//}
-//
-//+ (id)getKeyboardInstanceWithResponder:(BOOL)enable value:(NSString *)_value
-//{
-//    return nil;
-//}
-- (id)initWithResponder:(BOOL)enable isShowText:(BOOL)isShowText isRandomSort:(BOOL)randomSort length:(NSInteger)length key1:(NSString *)key1 key2:(NSString *)key2 key3:(NSString *)key3;
-{
-    return nil;
-}
-
 - (id)initWithResponder:(BOOL)enable isShowText:(BOOL)isShowText randomType:(PTKeyboardRandomType)randType length:(NSInteger)length key1:(NSString *)key1 key2:(NSString *)key2 key3:(NSString *)key3;
 {
     return nil;

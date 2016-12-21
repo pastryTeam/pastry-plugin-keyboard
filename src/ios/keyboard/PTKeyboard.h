@@ -77,19 +77,6 @@ typedef enum{
  * @param  enable      按键时是否播放按键音
  * @param  isShowText  是否回传键盘输入的明文
  * @param  length      最大可输入的字符长度，但长度设置为小于0的值时，表示不做长度控制
- * @param  randomSort 是否随机排序字母
- * @param  key1        3DES加密的密钥1
- * @param  key2        3DES加密的密钥2
- * @param  key3        3DES加密的密钥3
- * @return 键盘UIView
- */
-- (id)initWithResponder:(BOOL)enable isShowText:(BOOL)isShowText isRandomSort:(BOOL)randomSort length:(NSInteger)length key1:(NSString *)key1 key2:(NSString *)key2 key3:(NSString *)key3 PT_DEPRECATED(1.2.0, "使用 initWithResponder:enable isShowText: randomType: length: key1: key2: key3 方法");
-
-/**
- * 初始化键盘的VIEW
- * @param  enable      按键时是否播放按键音
- * @param  isShowText  是否回传键盘输入的明文
- * @param  length      最大可输入的字符长度，但长度设置为小于0的值时，表示不做长度控制
  * @param  randType    随机排序方式
  * @param  key1        3DES加密的密钥1
  * @param  key2        3DES加密的密钥2
