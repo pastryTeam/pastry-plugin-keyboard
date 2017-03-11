@@ -71,23 +71,6 @@
     # 安装最新代码
     ionic plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
 
-    需要在原生端定义 #define IONIC_PLATFORM 1 
-
->
-* pastry本地包安装
-        
-    pastry bake plugin add pastry-plugin-keyboard
->
-* github在线安装
-
-    # 安装指定 tag 版本,例如 版本号 = 0.1.0
-    pastry bake plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git#0.1.0 
-    
-    # 安装最新代码
-    pastry bake plugin add https://github.com/pastryTeam/pastry-plugin-keyboard.git
-    
-    不需要在原生端定义 IONIC_PLATFORM
-
 # 插件安装到项目里的目录结构
 >
 涉及两种目录
@@ -105,12 +88,6 @@
 JS 端UI设计
 
 * AngularJS
-
-    待定
-
-* pastry JS
-
-    待定
 
 >
 JS 端调用方法
