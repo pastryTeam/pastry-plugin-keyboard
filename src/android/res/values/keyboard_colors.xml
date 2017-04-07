@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="keyboard_char_main_bg">#3270b4</color>
+  <color name="keyboard_char_btn_bg">#f7f8f9</color>
+  <color name="keyboard_num_gong_splitline_bg">#c1c3c7</color>
+</resources>

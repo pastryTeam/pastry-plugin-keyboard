@@ -130,6 +130,21 @@
         <source-file src="src/android/securitykeyboard/tools/PTNowPoint.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl/tools" />
         <source-file src="src/android/securitykeyboard/tools/PTSoftInputMethodUtil.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl/tools" />
         
+        <resource-file src="src/android/res/anim/pop_enter.xml" target="res/anim/pop_enter.xml" />
+        <resource-file src="src/android/res/anim/pop_exit.xml" target="res/anim/pop_exit.xml" />
+
+        <resource-file src="src/android/res/drawable/fw_bg_dialog.xml" target="res/drawable/fw_bg_dialog.xml" />
+        <resource-file src="src/android/res/drawable/fw_kb_backspace_selected_selector.xml" target="res/drawable/fw_kb_backspace_selected_selector.xml" />
+        <resource-file src="src/android/res/drawable/fw_kb_funkey_selector.xml" target="res/drawable/fw_kb_funkey_selector.xml" />
+        <resource-file src="src/android/res/drawable/fw_kb_key_selector.xml" target="res/drawable/fw_kb_key_selector.xml" />
+        <resource-file src="src/android/res/drawable/fw_kb_nine_backspace.xml" target="res/drawable/fw_kb_nine_backspace.xml" />
+        <resource-file src="src/android/res/drawable/fw_kb_shift_selector.xml" target="res/drawable/fw_kb_shift_selector.xml" />
+        <resource-file src="src/android/res/drawable/fw_keyboard_backspace.xml" target="res/drawable/fw_keyboard_backspace.xml" />
+        
+        <resource-file src="src/android/res/values/keyboard_colors.xml" target="res/values/keyboard_colors.xml" />
+        <resource-file src="src/android/res/values/keyboard_dimens.xml" target="res/values/keyboard_dimens.xml" />
+        <resource-file src="src/android/res/values/keyboard_styles.xml" target="res/values/keyboard_styles.xml" />
+
      </platform>
 
 </plugin>

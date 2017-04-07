@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="fw_security_keyboard_input_type"></string>
+    <dimen name="cyberpay_fw_key_textSize">20px</dimen>
 </resources>
