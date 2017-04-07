@@ -99,6 +99,36 @@
         </config-file>
 
         <source-file src="src/android/PTKeyboards.java" target-dir="src/asp/citic/ptframework/plugin/keyboards" />
+        <source-file src="src/android/securitykeyboard/PTInputEncryptor.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+        <source-file src="src/android/securitykeyboard/PTInputEncryptorManager.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+        <source-file src="src/android/securitykeyboard/PTInputStatistician.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+        <source-file src="src/android/securitykeyboard/PTSecurityKeyboard.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+        <source-file src="src/android/securitykeyboard/PTSecurityKeyboardInputChangeListener.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+        <source-file src="src/android/securitykeyboard/PTSecurityKeyboardListener.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+        <source-file src="src/android/securitykeyboard/PTTopActivityManager.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard" />
+
+
+        <source-file src="src/android/securitykeyboard/impl/FullAlphabetSubKeyboardView.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/FullSymbolSubKeyboardView.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/KeyList.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/NineButtonDecorator.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTDefaultInputEncryptor.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTDefaultInputStatistician.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTDefaultSecurityEditText.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTDefaultSecurityKeyboard.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTDefaultSecurityKeyboardView.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTNormalSecurityEditText.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/PTNormalSecurityKeyboard.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/SmallNumberSubKeyboardView.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/SubKeyboardViewBase.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/SubKeyboardViewListener.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/TipButtonDecorator.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+        <source-file src="src/android/securitykeyboard/impl/ViewDecorator.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl" />
+
+        <source-file src="src/android/securitykeyboard/impl/tools/PTInvokeLater.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl/tools" />
+        <source-file src="src/android/securitykeyboard/impl/tools/PTKeyBoardUtil.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl/tools" />
+        <source-file src="src/android/securitykeyboard/impl/tools/PTNowPoint.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl/tools" />
+        <source-file src="src/android/securitykeyboard/impl/tools/PTSoftInputMethodUtil.java" target-dir="src/asp/citic/ptframework/plugin/keyboards/securitykeyboard/impl/tools" />
         
      </platform>
 
