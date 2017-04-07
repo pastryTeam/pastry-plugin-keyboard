@@ -10,7 +10,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import asp.citic.ptframework.plugin.browser.PTWindowActivity;
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTInputEncryptorManager;
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTSecurityKeyboard;
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTSecurityKeyboardListener;
