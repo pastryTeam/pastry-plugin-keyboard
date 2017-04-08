@@ -1,9 +1,12 @@
 package asp.citic.ptframework.plugin.keyboards;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.WebView;
 
 import org.apache.cordova.CallbackContext;
+import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.engine.SystemWebView;
 import org.json.JSONArray;
@@ -14,7 +17,6 @@ import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTInputEncryptorM
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTSecurityKeyboard;
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTSecurityKeyboardListener;
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.impl.PTDefaultSecurityKeyboard;
-import asp.citic.ptframework.plugin.keyboards.securitykeyboard.tools.PTInvokeLater;
 
 /**
  * Created by mj on 4/21/16.
@@ -23,8 +25,9 @@ import asp.citic.ptframework.plugin.keyboards.securitykeyboard.tools.PTInvokeLat
 public class PTKeyboards extends CordovaPlugin {
   private String TAG = "PTKeyboards";
   private PTSecurityKeyboard securityKeyboard;
-  private PTWindowActivity me;
+  private CordovaActivity act;
   private CallbackContext callback;
+  protected Handler mHandler = new Handler(Looper.getMainLooper());
   /**
    * 新加的属性
    */
@@ -63,19 +66,19 @@ public class PTKeyboards extends CordovaPlugin {
           case OPTYPE_INPUT:
 //            Log.d(TAG, "OPTYPE_INPUT====>" + dataStr);
 //            callback.success(response);
-            me.dojs("cordova.fireDocumentEvent('keyboard.input', " + dataStr + ");");
+            dojs("cordova.fireDocumentEvent('keyboard.input', " + dataStr + ");");
             break;
           case OPTYPE_POPUP:
             break;
           case OPTYPE_DELETE:
             Log.d(TAG, "OPTYPE_DELETE====>" + dataStr);
-            me.dojs("cordova.fireDocumentEvent('keyboard.delete', " + dataStr + ");");
+            dojs("cordova.fireDocumentEvent('keyboard.delete', " + dataStr + ");");
 //            callback.success(response);
             break;
           case OPTYPE_SUBMIT:
             Log.d(TAG, "OPTYPE_INPUT====>" + "OPTYPE_SUBMIT");
 //            callback.success(response);
-            me.dojs("cordova.fireDocumentEvent('keyboard.submit',  "+ dataStr + ");");
+            dojs("cordova.fireDocumentEvent('keyboard.submit',  "+ dataStr + ");");
             break;
         }
 
@@ -134,7 +137,7 @@ public class PTKeyboards extends CordovaPlugin {
   public void hideSecurityKeyboard() {
     if (securityKeyboard != null) {
 //      me.dojs("cordova.fireDocumentEvent('keyboard.submit');");
-      me.dojs("cordova.fireDocumentEvent('keyboard.submit',  "+ dataStr + ");");
+      dojs("cordova.fireDocumentEvent('keyboard.submit',  "+ dataStr + ");");
       securityKeyboard.hide();
     }
   }
@@ -144,7 +147,7 @@ public class PTKeyboards extends CordovaPlugin {
     Log.d(TAG, "act=======>" + action);
     Log.d(TAG, "args=======>" + args.toString());
     this.callback = callbackContext;
-    me = (PTWindowActivity) cordova.getActivity();
+    act = (CordovaActivity) cordova.getActivity();
 
     if (action.equals("jsShowKeyboards")) {
       JSONObject jsonObj = new JSONObject(args.getString(0));
@@ -163,10 +166,10 @@ public class PTKeyboards extends CordovaPlugin {
 
       Log.d(TAG, "activity name====>" + cordova.getActivity().getLocalClassName());
 
-      final WebView webView = (SystemWebView) me.getAppView().getEngine().getView();
+      final WebView webView = (SystemWebView) act.appView.getEngine().getView();
 //            final WebView webView = (SystemWebView) (this.webView.getView());
       securityKeyboard = PTDefaultSecurityKeyboard.INSTANCE;
-      PTInvokeLater.post(new Runnable() {
+      asp.citic.ptframework.plugin.keyboards.securitykeyboard.tools.PTInvokeLater.post(new Runnable() {
         @Override
         public void run() {
           securityKeyboard.show(webView, securityKeyboardListener,
@@ -175,7 +178,7 @@ public class PTKeyboards extends CordovaPlugin {
       });
 
     } else if (action.equals("jsHideKeyboards")) {
-      PTInvokeLater.post(new Runnable() {
+      asp.citic.ptframework.plugin.keyboards.securitykeyboard.tools.PTInvokeLater.post(new Runnable() {
         @Override
         public void run() {
           hideSecurityKeyboard();
@@ -185,5 +188,24 @@ public class PTKeyboards extends CordovaPlugin {
     /*******修改了返回值****/
 //        return super.execute(action, args, callbackContext);
     return true;
+  }
+
+  /**
+   *
+   * @param js
+   */
+  public void dojs(final String js){
+    if (act.appView == null) {
+      act.init();
+    }
+    mHandler.post(new Runnable() {
+      @Override
+      public void run() {
+        if(act.appView.getEngine().getView() instanceof SystemWebView){
+          SystemWebView webView = (SystemWebView)act.appView.getEngine().getView();
+          webView.loadUrl(String.format("javascript:%s",js));
+        }
+      }
+    });
   }
 }
