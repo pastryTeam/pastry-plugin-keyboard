@@ -8,10 +8,13 @@ import android.webkit.WebView;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaActivity;
 import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CordovaWebView;
 import org.apache.cordova.engine.SystemWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Field;
 
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTInputEncryptorManager;
 import asp.citic.ptframework.plugin.keyboards.securitykeyboard.PTSecurityKeyboard;
@@ -26,6 +29,7 @@ public class PTKeyboards extends CordovaPlugin {
   private String TAG = "PTKeyboards";
   private PTSecurityKeyboard securityKeyboard;
   private CordovaActivity act;
+  private CordovaWebView appView;
   private CallbackContext callback;
   protected Handler mHandler = new Handler(Looper.getMainLooper());
   /**
@@ -165,8 +169,8 @@ public class PTKeyboards extends CordovaPlugin {
       }
 
       Log.d(TAG, "activity name====>" + cordova.getActivity().getLocalClassName());
-
-      final WebView webView = (SystemWebView) act.appView.getEngine().getView();
+      appView = getField();
+      final WebView webView = (SystemWebView) appView.getEngine().getView();
 //            final WebView webView = (SystemWebView) (this.webView.getView());
       securityKeyboard = PTDefaultSecurityKeyboard.INSTANCE;
       asp.citic.ptframework.plugin.keyboards.securitykeyboard.tools.PTInvokeLater.post(new Runnable() {
@@ -195,17 +199,43 @@ public class PTKeyboards extends CordovaPlugin {
    * @param js
    */
   public void dojs(final String js){
-    if (act.appView == null) {
-      act.init();
-    }
+//    if (act.appView == null) {
+//      act.init();
+//    }
     mHandler.post(new Runnable() {
       @Override
       public void run() {
-        if(act.appView.getEngine().getView() instanceof SystemWebView){
-          SystemWebView webView = (SystemWebView)act.appView.getEngine().getView();
+        if(appView.getEngine().getView() instanceof SystemWebView){
+          SystemWebView webView = (SystemWebView)appView.getEngine().getView();
           webView.loadUrl(String.format("javascript:%s",js));
         }
       }
     });
   }
+
+  /**
+   * 反射取protect类型的field
+   */
+  private CordovaWebView getField(){
+    Class clazz = null;
+    try {
+      clazz = Class.forName("org.apache.cordova.CordovaActivity");
+      Field field = null;
+      try {
+        field = clazz.getDeclaredField("appView");
+        field.setAccessible(true);
+        try {
+          appView = (CordovaWebView) field.get(act);
+        } catch (IllegalAccessException e) {
+          e.printStackTrace();
+        }
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      }
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+    return appView;
+  }
+
 }
