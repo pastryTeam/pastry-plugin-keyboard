@@ -30,15 +30,6 @@
  */
 @interface PTKeyboards : CDVPlugin<PTKeyboardDelegate>
 
-#ifdef IONIC_PLATFORM
-
-#else
-/** 
- * 兼容pastry平台
- */
-- (void)tapViewToCloseTheKeyboard;
-#endif
-
 /**
  * JS端发送请求，打开密码键盘 <br/>
  * 打开键盘结束后，发送消息给JS端 <br/>

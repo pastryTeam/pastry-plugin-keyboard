@@ -27,12 +27,6 @@
 
 @implementation KeyboardViewController
 
-#ifdef IONIC_PLATFORM
-
-#else
-PT_REGISTER_COMPONENT(PTComponentType_Native, 密码键盘组件示例集合, 密码键盘, KeyboardViewController, KeyboardViewController, , )
-#endif
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.

@@ -10,15 +10,6 @@
 #import "PTKeyboardiPhone.h"
 #import "PTKeyboardPasswordNumerPhone.h"
 
-#ifdef IONIC_PLATFORM
-
-#else
-
-#import "PTBrowserContainer.h"
-#import "PTWindowPage.h"
-
-#endif
-
 /**
  * 标记是否显示明文 <br>
  * mask = 1 : 显示密文 <br/>
@@ -150,11 +141,7 @@ typedef enum {
         _keyboard.needEncrypt = needEncryptor;
         _keyboard.keyDelegate = self;
         
-#ifdef IONIC_PLATFORM
         [self didShowKeyboard:_keyboard toTargetView:[self getTargetView]];
-#else
-        [self didShowKeyboard:_keyboard browserContainer:[self getBrowserContainer]];
-#endif
         return YES;
     }
 }
@@ -176,8 +163,6 @@ typedef enum {
 
 #pragma mark - 密码键盘显示、隐藏动画效果
 
-#ifdef IONIC_PLATFORM
-
 /**
  * 将密码键盘添加到父View，并执行展示动画效果
  * @param   keyboard        待操作的密码键盘
@@ -198,38 +183,6 @@ typedef enum {
     }];
 }
 
-#else
-
-/**
- * 将密码键盘添加到父View，并执行展示动画效果
- * @param   keyboard        待操作的密码键盘
- * @param   targetView      密码键盘的父View
- */
-- (void)didShowKeyboard:(PTKeyboard *)keyboard browserContainer:(PTBrowserContainer *)browserContainer
-{
-    PTLogDebug(@"didShowKeyboard");
-    
-    CGRect currentRect = [browserContainer getOriginFrame];
-    [keyboard setFrame:CGRectMake(0.f, currentRect.size.height, keyboard.frame.size.width, keyboard.frame.size.height)];
-    [[browserContainer.view superview] addSubview:keyboard];
-    
-    [UIView animateWithDuration:.3f animations:^ {
-        // 设置密码键盘的 frame
-        CGRect newFrame = CGRectMake(0.f, currentRect.size.height - keyboard.frame.size.height, keyboard.frame.size.width, keyboard.frame.size.height);
-        keyboard.frame = newFrame;
-        PTLogDebug(@"end frame = %@",NSStringFromCGRect(currentRect));
-        PTLogDebug(@"keyboard frame = %@",NSStringFromCGRect(keyboard.frame));
-    } completion:^ (BOOL finish) {
-        // 设置 browserContainer 显示密码键盘后的 frame
-        browserContainer.view.backgroundColor = [UIColor yellowColor];
-        CGRect browserContainerNewFrame = CGRectMake(0.f, currentRect.origin.y, currentRect.size.width, currentRect.size.height - keyboard.frame.size.height);
-        [browserContainer setWindowPageFrame:browserContainerNewFrame];
-        PTLogDebug(@"did change jswebview frame to %@",NSStringFromCGRect(browserContainer.view.frame));
-    }];
-}
-#endif
-
-#ifdef IONIC_PLATFORM
 /**
  * 将密码键盘从父View上移除，并执行关闭动画效果
  * @param   keyboard        待操作的密码键盘
@@ -242,28 +195,7 @@ typedef enum {
         [keyboard removeFromSuperview];
     }];
 }
-#else
-/**
- * 将密码键盘从父View上移除，并执行关闭动画效果
- * @param   keyboard        待操作的密码键盘
- */
-- (void)didHideKeyboard:(PTKeyboard *)keyboard {
-    [UIView animateWithDuration:.3f animations:^ {
-        CGFloat y = keyboard.frame.origin.y + keyboard.frame.size.height;
-        keyboard.frame = CGRectMake(keyboard.frame.origin.x, y, keyboard.frame.size.width, keyboard.frame.size.height);
-        //            self.frame = originFrame;
-        PTBrowserContainer *browserContainer = [self getBrowserContainer];
-        // 恢复 BrowserContainer 不显示 keyboard 的frame大小；
-        [browserContainer getCurrentWindowPage].view.frame = [browserContainer getOriginFrame];
-//        [browserContainer setWindowPageFrame:[browserContainer getOriginFrame]];
-        
-    } completion:^ (BOOL finish) {
-        PTBrowserContainer *browserContainer = [self getBrowserContainer];
-        [browserContainer setWindowPageFrame:[browserContainer getOriginFrame]];
-        [keyboard removeFromSuperview];
-    }];
-}
-#endif
+
 
 #pragma mark - 获取密码键盘的父容器
 /**
@@ -382,18 +314,6 @@ typedef enum {
     //            strength = [NSNumber numberWithInt:strengthValue];
     //        }
     
-#ifdef IONIC_PLATFORM
-    
-#else
-    PTBrowserContainer *browserContainer = [self getBrowserContainer];
-    
-    UIViewController *parentVC = [self getBrowserContainerParentViewController:browserContainer];
-    if (parentVC != nil) {
-        int strengthValue = [parentVC performSelector:@selector(passwordStrength:encryptData:) withObject:keyStat withObject:data];
-        strength = [NSNumber numberWithInt:strengthValue];
-    }
-#endif
-    
     return strength;
 }
 
@@ -478,58 +398,8 @@ typedef enum {
                 break;
         }
         
-#ifdef IONIC_PLATFORM
         [self.commandDelegate evalJs:js];
-#else
-        PTBrowserContainer *browserContainer = [self getBrowserContainer];
-        if (browserContainer != nil) {
-            PTWindowPage *windowPage = [browserContainer getCurrentWindowPage];
-            [windowPage.commandDelegate evalJs:js];
-        }
-#endif
     }
 }
-
-
-#pragma mark - 兼容pastry平台
-
-#ifdef IONIC_PLATFORM
-
-#else
-
--(void)tapViewToCloseTheKeyboard
-{
-    [self sendAction:OPTYPE_SUBMIT text:nil plainText:nil passwordStrength:nil];
-}
-
-/**
- * 通过webview对象，获取当前的插件的BrowserContainer；
- */
-- (id)getBrowserContainer{
-    PTBrowserContainer *browserContainer = nil;
-    for (UIView *next = self.webView; next; next = next.superview) {
-        UIResponder *nextResponder = [next nextResponder];
-        if ([nextResponder class] == [PTBrowserContainer class]) {
-            browserContainer = (PTBrowserContainer *)nextResponder;
-            break;
-        }
-    }
-    
-    return browserContainer;
-}
-
-- (id)getBrowserContainerParentViewController:(UIViewController *)browserContainer{
-    UIViewController *parentViewController = nil;
-    for (UIView *next = browserContainer.view; next; next = next.superview) {
-        UIResponder *nextResponder = [next nextResponder];
-        if ([[nextResponder class] isSubclassOfClass:[UIViewController class]] && [nextResponder respondsToSelector:@selector(passwordStrength:encryptData:)]) {
-            parentViewController = (UIViewController *)nextResponder;
-            break;
-        }
-    }
-    
-    return parentViewController;
-}
-#endif
 
 @end

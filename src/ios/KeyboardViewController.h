@@ -9,11 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "PTKeyboardDelegate.h"
 
-#ifdef IONIC_PLATFORM
 @interface KeyboardViewController : UIViewController<PTKeyboardDelegate>
-#else
-@interface KeyboardViewController : PTViewControllerBase<PTKeyboardDelegate, PTComponentInterface>
-#endif
 
 - (IBAction)returnBeforePage:(id)sender;
 
