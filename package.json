@@ -1,6 +1,6 @@
 {
   "name": "pastry-plugin-keyboard",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "pastry 插件描述",
   "cordova": {
     "id": "pastry-plugin-keyboard",
